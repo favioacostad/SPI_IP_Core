@@ -1,0 +1,122 @@
+/*###########################################################################
+//# G0B1T: HDL SERIAL COMMUNICATION PROTOCOLS. 2020.
+//###########################################################################
+//# Copyright (C) 2018. F.E.Segura Quijano (FES) fsegura@uniandes.edu.co
+//# Copyright (C) 2020. F.A.Acosta David   (FAD) fa.acostad@uniandes.edu.co
+//# 
+//# This program is free software: you can redistribute it and/or modify
+//# it under the terms of the GNU General Public License as published by
+//# the Free Software Foundation, version 3 of the License.
+//#
+//# This program is distributed in the hope that it will be useful,
+//# but WITHOUT ANY WARRANTY; without even the implied warranty of
+//# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//# GNU General Public License for more details.
+//#
+//# You should have received a copy of the GNU General Public License
+//# along with this program.  If not, see <http://www.gnu.org/licenses/>
+//#########################################################################*/
+
+//===========================================================================
+//  MODULE Definition
+//===========================================================================
+// Escala de tiempo
+`timescale 1 ns/ 1 ns
+module TB_SYSTEM();
+// Constants                                           
+//===========================================================================
+//  Parameter (May differ for physical synthesis)
+//===========================================================================
+// General purpose registers
+	reg eachvec;
+	parameter TCK = 20; // Clock period in ns
+	parameter CLK_FREQ = 1000000000 / TCK; // Frequency in HZ
+	parameter DATAWIDTH_BUS = 8;
+	parameter CLOCK_RATIO = 4; // CLOCK_RATIO = 1/16th (2^4 = 16 CLOCK cycles) 
+
+// Test vector input registers
+	
+//===========================================================================
+//  INTERNAL WIRE/REG Declarations
+//===========================================================================
+// Wires (OUTPUTS)
+	wire TB_SYSTEM_MISO_Out;
+	wire [DATAWIDTH_BUS-1:0] TB_SYSTEM_data_Out;
+	wire [DATAWIDTH_BUS-1:0] TB_SYSTEM_dataCounter_Out;
+// Reg (INPUTS)
+	reg TB_SYSTEM_CLOCK_50;
+	reg TB_SYSTEM_RESET_InHigh;
+	reg TB_SYSTEM_COUNT_InHigh;
+	reg TB_SYSTEM_SS_InLow;
+	reg TB_SYSTEM_MOSI_In;
+	reg TB_SYSTEM_SCK_In;
+	
+// Assign statements (If any)                          
+	BB_SYSTEM BB_SYSTEM_u0 (
+// Port map - connection between master ports and signals/registers   
+//////////// OUTPUTS ////////////
+	.BB_SYSTEM_MISO_Out(TB_SYSTEM_MISO_Out),
+	.BB_SYSTEM_data_Out(TB_SYSTEM_data_Out),
+	.BB_SYSTEM_dataCounter_Out(TB_SYSTEM_dataCounter_Out),
+//////////// INPUTS ////////////
+	.BB_SYSTEM_CLOCK_50(TB_SYSTEM_CLOCK_50),
+	.BB_SYSTEM_RESET_InHigh(TB_SYSTEM_RESET_InHigh),
+	.BB_SYSTEM_COUNT_InHigh(TB_SYSTEM_COUNT_InHigh),
+	.BB_SYSTEM_SS_InLow(TB_SYSTEM_SS_InLow),
+	.BB_SYSTEM_MOSI_In(TB_SYSTEM_MOSI_In),
+	.BB_SYSTEM_SCK_In(TB_SYSTEM_SCK_In)
+);
+	
+initial                                                
+begin                                                  
+// Code that executes only once                        
+// Insert code here --> begin                          
+	TB_SYSTEM_CLOCK_50 <= 0;
+	TB_SYSTEM_SCK_In <= 0;
+// --> end                                             
+$display("Running testbench");                       
+end    
+                                                
+always                                                 
+// Optional sensitivity list                           
+// @(Event1 or event2 or .... eventn)                  
+	#(TCK/2) TB_SYSTEM_CLOCK_50 <= ~ TB_SYSTEM_CLOCK_50;
+	
+always                                                 
+// Optional sensitivity list                           
+// @(Event1 or event2 or .... eventn)                  
+	#(16*(TCK/2)) TB_SYSTEM_SCK_In <= ~ TB_SYSTEM_SCK_In;
+	
+initial begin                                                  
+// Code executes for every event on sensitivity list   
+// Insert code here --> begin     
+                    
+	#0 		TB_SYSTEM_RESET_InHigh <= 1'b1; TB_SYSTEM_COUNT_InHigh <= 1'b0; TB_SYSTEM_SS_InLow <= 1'b1; TB_SYSTEM_MOSI_In <= 1'b1;
+	#100000 	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b1; TB_SYSTEM_SS_InLow <= 1'b1; TB_SYSTEM_MOSI_In <= 1'b1;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b1; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b1;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b1; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b0;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b0; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b1;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b1; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b1;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b0; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b0;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b1; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b1;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b0; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b0;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b1; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b1;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b1; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b0;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b0; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b1;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b0; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b1;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b0; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b0;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b1; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b1;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b0; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b1;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b1; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b0;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b0; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b1;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b1; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b0;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b0; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b0;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b0; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b1;
+	#100000	TB_SYSTEM_RESET_InHigh <= 1'b0; TB_SYSTEM_COUNT_InHigh <= 1'b0; TB_SYSTEM_SS_InLow <= 1'b0; TB_SYSTEM_MOSI_In <= 1'b1;
+
+	//#(TCK*10000) $finish;	
+@eachvec;
+$finish;                                              
+// --> end                                             
+end                                                    
+endmodule
